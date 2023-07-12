@@ -1,0 +1,22 @@
+name: terraform
+on:
+  workflow_call:
+    secrets:
+      DOPPLER_TOKEN:
+        required: true
+jobs:
+  apply:
+    name: deploy to terraform cloud
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: hashicorp/setup-terraform@v2
+      - uses: dopplerhq/secrets-fetch-action@v1.1.1
+        with:
+          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
+          inject-env-vars: true
+      - name: plan and apply
+        run: |
+          terraform init
+          terraform plan -input=false -no-color -out planfile
+          terraform apply -input=false -no-color -auto-approve planfile

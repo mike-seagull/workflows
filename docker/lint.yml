@@ -1,0 +1,17 @@
+name: dockerfile-validator
+
+on:
+  workflow_call:
+
+jobs:
+  lint-docker:
+    name: Lint Dockerfile
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+      - name: Run lint
+        uses: ghe-actions/dockerfile-validator@v1
+        with:
+          dockerfile: 'Dockerfile'
+          lint: 'hadolint'

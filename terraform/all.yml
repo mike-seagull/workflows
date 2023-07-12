@@ -1,0 +1,23 @@
+name: all
+on:
+  workflow_call:
+    secrets:
+      DOPPLER_TOKEN:
+        required: true
+jobs:
+  test:
+    uses: ./terraform/test.yml
+  build:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: test
+    uses: ./terraform/apply.yml
+    secrets:
+      DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+  post_build:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    needs: 
+      - test
+      - build
+    uses: ./terraform/docs.yml
+
+  

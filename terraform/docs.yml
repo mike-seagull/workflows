@@ -1,0 +1,24 @@
+name: terraform-docs
+on:
+  workflow_call:
+    inputs:
+      args:
+        description: additional arguments to pass to terraform-docs
+        default: "--hide requirements --hide modules --hide outputs"
+        required: false
+        type: string
+
+jobs:
+  terraform-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Generate docs
+        uses: terraform-docs/gh-actions@v1.0.0
+        with:
+          working-dir: .
+          output-file: README.md
+          output-method: replace
+          git-push: "true"
+          args: ${{ inputs.args }}
+        # terraform-docs markdown . --output-file README.md --output-mode replace --hide requirements --hide modules --hide outputs
