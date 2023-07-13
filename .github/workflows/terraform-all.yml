@@ -6,7 +6,6 @@ on:
         required: true
       TF_CLOUD_TOKEN:
         required: false
-        default: ""
 jobs:
   test:
     uses: ./.github/workflows/terraform-test.yml

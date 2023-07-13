@@ -4,7 +4,6 @@ on:
     secrets:
       TF_CLOUD_TOKEN:
         required: false
-        default: ""
 jobs:
   lint:
     uses: ./.github/workflows/terraform-lint.yml
