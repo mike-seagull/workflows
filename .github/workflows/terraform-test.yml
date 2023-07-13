@@ -1,4 +1,4 @@
-name: test
+name: terraform-test
 on:
   workflow_call:
     secrets:
@@ -7,8 +7,8 @@ on:
         default: ""
 jobs:
   lint:
-    uses: ./terraform/lint.yml
+    uses: ./.github/workflows/terraform-lint.yml
   validate:
-    uses: ./terraform/validate.yml
+    uses: ./.github/workflows/terraform-validate.yml
     secrets:
       TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}

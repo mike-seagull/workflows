@@ -1,7 +1,12 @@
-name: dockerfile-validator
+name: docker-lint
 
 on:
   workflow_call:
+    inputs:
+      dockerfile:
+        required: false
+        type: string
+        defaut: "Dockerfile"
 
 jobs:
   lint-docker:
@@ -13,5 +18,5 @@ jobs:
       - name: Run lint
         uses: ghe-actions/dockerfile-validator@v1
         with:
-          dockerfile: 'Dockerfile'
+          dockerfile: ${{ inputs.Dockerfile }}
           lint: 'hadolint'

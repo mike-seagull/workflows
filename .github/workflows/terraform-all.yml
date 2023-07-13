@@ -1,4 +1,4 @@
-name: all
+name: terraform-all
 on:
   workflow_call:
     secrets:
@@ -9,13 +9,13 @@ on:
         default: ""
 jobs:
   test:
-    uses: ./terraform/test.yml
+    uses: ./.github/workflows/terraform-test.yml
     secrets:
       TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
   build:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: test
-    uses: ./terraform/apply.yml
+    uses: ./.github/workflows/terraform-apply.yml
     secrets:
       DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
   post_build:
@@ -23,6 +23,6 @@ jobs:
     needs: 
       - test
       - build
-    uses: ./terraform/docs.yml
+    uses: ./.github/workflows/terraform-docs.yml
 
   

@@ -1,8 +1,10 @@
-name: build and publish images
-
+name: docker-build
 on:
   workflow_call:
-
+    inputs:
+      image_name:
+        type: string
+        required: true
 jobs:
   push-base:
     name: Push base image
@@ -25,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action
         with:
-          images: ghcr.io/${{ github.repository_owner }}/home.hllstr.com
+          images: ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}
 
       - name: Build and push Docker image
         uses: docker/build-push-action
@@ -33,5 +35,5 @@ jobs:
           context: .
           file: Dockerfile
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/home.hllstr.com:latest
+          tags: ghcr.io/${{ github.repository_owner }}/${{ inputs.image_name }}:latest
           labels: ${{ steps.meta.outputs.labels }}
