@@ -1,8 +1,14 @@
 name: test
 on:
   workflow_call:
+    secrets:
+      TF_CLOUD_TOKEN:
+        required: false
+        default: ""
 jobs:
   lint:
     uses: ./terraform/lint.yml
   validate:
     uses: ./terraform/validate.yml
+    secrets:
+      TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}

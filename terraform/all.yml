@@ -4,9 +4,14 @@ on:
     secrets:
       DOPPLER_TOKEN:
         required: true
+      TF_CLOUD_TOKEN:
+        required: false
+        default: ""
 jobs:
   test:
     uses: ./terraform/test.yml
+    secrets:
+      TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
   build:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: test

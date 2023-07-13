@@ -1,6 +1,10 @@
 name: terraform-validate
 on:
   workflow_call:
+    secrets:
+      TF_CLOUD_TOKEN:
+        required: false
+        default: ""
 jobs:
   terraform-validate:
     runs-on: ubuntu-latest
@@ -11,8 +15,25 @@ jobs:
         id: fmt
         run: terraform fmt -check
         continue-on-error: true
+      - name: Check token set
+        id: token-check
+        # perform secret check & put boolean result as an output
+        shell: bash
+        run: |
+          if [ "${{ secrets.TF_CLOUD_TOKEN }}" != '' ]; then
+            echo "token_set=true" >> $GITHUB_OUTPUT;
+          else
+            echo "token_set=false" >> $GITHUB_OUTPUT;
+          fi
+      - name: Terraform Init with token
+        if: ${{ steps.secret-check.outputs.token_set == 'true' }}
+        shell: bash
+        run: terraform init
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_CLOUD_TOKEN }}
       - name: Terraform Init
-        id: init
+        if: ${{ steps.secret-check.outputs.token_set != 'true' }}
+        shell: bash
         run: terraform init
       - name: Terraform Validate
         id: validate
