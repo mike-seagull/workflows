@@ -1,6 +1,10 @@
 name: terraform-all
 on:
   workflow_call:
+    inputs:
+      terraform_docs_args:
+        type: string
+        required: false
     secrets:
       DOPPLER_TOKEN:
         required: true
@@ -12,17 +16,22 @@ jobs:
     secrets:
       TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
   build:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: github.ref == 'refs/heads/main'
     needs: test
     uses: ./.github/workflows/terraform-apply.yml
     secrets:
       DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
       TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
   post_build:
-    if: ${{ github.ref == 'refs/heads/main' }}
+    if: github.ref == 'refs/heads/main' && github.event.inputs.terraform_docs_args == ''
     needs: 
       - test
       - build
     uses: ./.github/workflows/terraform-docs.yml
-
+  post_build_with_args:
+    if: github.ref == 'refs/heads/main' && github.event.inputs.terraform_docs_args != ''
+    needs: 
+      - test
+      - build
+    uses: ./.github/workflows/terraform-docs.yml
   
