@@ -35,4 +35,6 @@ jobs:
       - test
       - build
     uses: ./.github/workflows/terraform-docs.yml
+    with:
+      args: ${{ inputs.terraform_docs_args }}
   
