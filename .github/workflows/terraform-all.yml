@@ -17,6 +17,7 @@ jobs:
     uses: ./.github/workflows/terraform-apply.yml
     secrets:
       DOPPLER_TOKEN: ${{ secrets.DOPPLER_TOKEN }}
+      TF_CLOUD_TOKEN: ${{ secrets.TF_CLOUD_TOKEN }}
   post_build:
     if: ${{ github.ref == 'refs/heads/main' }}
     needs: 

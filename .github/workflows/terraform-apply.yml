@@ -4,6 +4,8 @@ on:
     secrets:
       DOPPLER_TOKEN:
         required: true
+      TF_CLOUD_TOKEN:
+        required: false
 jobs:
   apply:
     name: deploy to terraform cloud
@@ -15,8 +17,27 @@ jobs:
         with:
           doppler-token: ${{ secrets.DOPPLER_TOKEN }}
           inject-env-vars: true
+      - name: Check token set
+        id: token-check
+        # perform secret check & put boolean result as an output
+        shell: bash
+        run: |
+          if [ "${{ secrets.TF_CLOUD_TOKEN }}" != '' ]; then
+            echo "token_set=true" >> $GITHUB_OUTPUT;
+          else
+            echo "token_set=false" >> $GITHUB_OUTPUT;
+          fi
+      - name: Terraform Init with token
+        if: ${{ steps.token-check.outputs.token_set == 'true' }}
+        shell: bash
+        run: terraform init
+        env:
+          TF_TOKEN_app_terraform_io: ${{ secrets.TF_CLOUD_TOKEN }}
+      - name: Terraform Init
+        if: ${{ steps.token-check.outputs.token_set != 'true' }}
+        shell: bash
+        run: terraform init
       - name: plan and apply
         run: |
-          terraform init
           terraform plan -input=false -no-color -out planfile
           terraform apply -input=false -no-color -auto-approve planfile
