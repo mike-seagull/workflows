@@ -25,9 +25,9 @@ jobs:
             echo "token_set=false" >> $GITHUB_OUTPUT;
           fi
       - name: Terraform Init with token
-        if: ${{ steps.secret-check.outputs.token_set == 'true' }}
+        if: ${{ steps.token-check.outputs.token_set == 'true' }}
         shell: bash
-        run: printenv && terraform init
+        run: terraform init
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_CLOUD_TOKEN }}
       - name: Terraform Init
