@@ -6,7 +6,7 @@ on:
       dockerfile:
         required: false
         type: string
-        defaut: "Dockerfile"
+        default: "Dockerfile"
 
 jobs:
   lint-docker:
