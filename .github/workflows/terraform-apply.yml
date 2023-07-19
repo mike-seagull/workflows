@@ -3,7 +3,7 @@ on:
   workflow_call:
     secrets:
       DOPPLER_TOKEN:
-        required: true
+        required: false
       TF_CLOUD_TOKEN:
         required: false
 jobs:
@@ -13,10 +13,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: hashicorp/setup-terraform@v2
-      - uses: dopplerhq/secrets-fetch-action@v1.1.1
-        with:
-          doppler-token: ${{ secrets.DOPPLER_TOKEN }}
-          inject-env-vars: true
       - name: Check token set
         id: token-check
         # perform secret check & put boolean result as an output
@@ -36,6 +32,7 @@ jobs:
           terraform apply -input=false -no-color -auto-approve planfile
         env:
           TF_TOKEN_app_terraform_io: ${{ secrets.TF_CLOUD_TOKEN }}
+          TF_VAR_doppler_token: ${{ secrets.DOPPLER_TOKEN }}
       - name: Terraform apply
         if: ${{ steps.token-check.outputs.token_set != 'true' }}
         shell: bash
@@ -43,3 +40,5 @@ jobs:
           terraform init
           terraform plan -input=false -no-color -out planfile
           terraform apply -input=false -no-color -auto-approve planfile
+        env:
+          TF_VAR_doppler_token: ${{ secrets.DOPPLER_TOKEN }}
